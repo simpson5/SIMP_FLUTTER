@@ -80,7 +80,13 @@ class Movie extends StatelessWidget {
             width: 120,
             child: Text(
               title,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
       ]),

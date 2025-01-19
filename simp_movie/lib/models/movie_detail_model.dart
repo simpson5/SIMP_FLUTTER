@@ -1,3 +1,4 @@
+// 장르 모델
 class Genre {
   final int id;
   final String name;
@@ -15,6 +16,7 @@ class Genre {
   }
 }
 
+// 배급사 모델
 class ProductionCompany {
   final int id;
   final String? logoPath;
@@ -38,6 +40,7 @@ class ProductionCompany {
   }
 }
 
+// 배급 국가 모델
 class ProductionCountry {
   final String iso31661;
   final String name;
@@ -55,6 +58,7 @@ class ProductionCountry {
   }
 }
 
+// 배급 언어 모델
 class SpokenLanguage {
   final String englishName;
   final String iso6391;

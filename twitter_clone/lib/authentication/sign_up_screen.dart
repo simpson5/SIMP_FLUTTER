@@ -20,13 +20,22 @@ class SignUpScreen extends StatelessWidget {
               Icon(
                 FontAwesomeIcons.twitter,
                 color: Color(0xFF4e98e9),
+                size: Sizes.size40,
               ),
-              Gaps.v20,
+              Gaps.v40,
+              Gaps.v40,
               Container(
                 padding: EdgeInsets.symmetric(horizontal: Sizes.size40),
-                child: Text('See what\'s happening in the world right now.'),
+                child: Text(
+                  'See what\'s happening in the world right now.',
+                  style: TextStyle(
+                    fontSize: Sizes.size20,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
-              Gaps.v20,
+              Gaps.v40,
+              Gaps.v40,
               AuthButton(
                 text: 'Continue with Google',
                 icon: FontAwesomeIcons.google,

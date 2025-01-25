@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:twitter_clone/constants/sizes.dart';
 
-class AuthButton extends StatelessWidget {
+class MoveButton extends StatelessWidget {
   final String text;
   final IconData? icon;
   final bool isDark;
   final Widget? goToNextScreen;
 
-  const AuthButton({
+  const MoveButton({
     super.key,
     required this.text,
     required this.icon,

@@ -3,25 +3,23 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:twitter_clone/authentication/created_account_screen.dart';
 import 'package:twitter_clone/constants/gaps.dart';
 import 'package:twitter_clone/constants/sizes.dart';
-import 'package:twitter_clone/widgets/auth_button.dart';
+import 'package:twitter_clone/widgets/app_bar.dart';
+import 'package:twitter_clone/widgets/move_button.dart';
 
-class SignUpScreen extends StatelessWidget {
-  const SignUpScreen({super.key});
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const AppBarWidget(
+        leadingType: LeadingType.none,
+      ),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: Sizes.size40),
           child: Column(
             children: [
-              Gaps.v40,
-              Icon(
-                FontAwesomeIcons.twitter,
-                color: Color(0xFF4e98e9),
-                size: Sizes.size40,
-              ),
               Gaps.v40,
               Gaps.v40,
               Container(
@@ -36,14 +34,14 @@ class SignUpScreen extends StatelessWidget {
               ),
               Gaps.v40,
               Gaps.v40,
-              AuthButton(
+              MoveButton(
                 text: 'Continue with Google',
                 icon: FontAwesomeIcons.google,
                 isDark: false,
                 goToNextScreen: null,
               ),
               Gaps.v20,
-              AuthButton(
+              MoveButton(
                 text: 'Continue with Apple',
                 icon: FontAwesomeIcons.apple,
                 isDark: false,
@@ -73,7 +71,7 @@ class SignUpScreen extends StatelessWidget {
                 ],
               ),
               Gaps.v10,
-              AuthButton(
+              MoveButton(
                   text: 'Create account',
                   icon: null,
                   isDark: true,

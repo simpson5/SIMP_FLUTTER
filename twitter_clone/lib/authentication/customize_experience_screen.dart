@@ -1,57 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:twitter_clone/authentication/created_account_screen.dart';
 import 'package:twitter_clone/constants/gaps.dart';
 import 'package:twitter_clone/constants/sizes.dart';
+import 'package:twitter_clone/widgets/app_bar.dart';
 
-class CustomizeYourScreen extends StatefulWidget {
+class CustomizeExperienceScreen extends StatefulWidget {
   final CreatedAccountScreen previousScreen; // 이전 화면 참조 추가
 
-  const CustomizeYourScreen({
+  const CustomizeExperienceScreen({
     super.key,
     required this.previousScreen, // 생성자에 추가
   });
 
   @override
-  State<CustomizeYourScreen> createState() => _CustomizeYourScreenState();
+  State<CustomizeExperienceScreen> createState() => _CustomizeYourScreenState();
 }
 
-class _CustomizeYourScreenState extends State<CustomizeYourScreen> {
+class _CustomizeYourScreenState extends State<CustomizeExperienceScreen> {
   // Switch 상태 변수 추가
   bool _isTrackingEnabled = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const AppBarWidget(
+        leadingType: LeadingType.back,
+      ),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: Sizes.size40),
           child: Column(
             children: [
-              Gaps.v40,
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: Icon(
-                        FontAwesomeIcons.arrowLeft,
-                        color: Colors.black,
-                        size: Sizes.size20,
-                      ),
-                    ),
-                  ),
-                  Icon(
-                    FontAwesomeIcons.twitter,
-                    color: Color(0xFF4e98e9),
-                    size: Sizes.size40,
-                  ),
-                ],
-              ),
               Gaps.v40,
               Text(
                 "Customize your experience",
@@ -163,7 +142,7 @@ class _CustomizeYourScreenState extends State<CustomizeYourScreen> {
           child: GestureDetector(
             onTap: () {
               if (_isTrackingEnabled) {
-                Navigator.pop(context);
+                Navigator.pop(context, _isTrackingEnabled);
               }
             },
             child: Container(

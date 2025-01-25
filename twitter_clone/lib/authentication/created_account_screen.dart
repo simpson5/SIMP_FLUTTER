@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:twitter_clone/authentication/customize_your_screen.dart';
+import 'package:twitter_clone/authentication/customize_experience_screen.dart';
 import 'package:twitter_clone/constants/gaps.dart';
 import 'package:twitter_clone/constants/sizes.dart';
+import 'package:twitter_clone/widgets/app_bar.dart';
+import 'package:twitter_clone/widgets/next_button.dart';
+import 'package:twitter_clone/widgets/sign_up_button.dart';
 
 class CreatedAccountScreen extends StatefulWidget {
   const CreatedAccountScreen({super.key});
@@ -13,20 +16,6 @@ class CreatedAccountScreen extends StatefulWidget {
 }
 
 class _CreatedAccountScreenState extends State<CreatedAccountScreen> {
-  // 폼 키 추가
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  // 생년월일 컨트롤러 추가
-  final TextEditingController _birthdayController = TextEditingController();
-
-  // 상태 변수 추가
-  String _name = "";
-  String _contactInfo = "";
-  bool _isFromCustomize = false; // CustomizeYourScreen에서 돌아왔는지 확인하는 변수
-
-  // 초기 날짜 설정
-  DateTime initialDate = DateTime.now();
-
   // 이메일 검증을 위한 정규식
   final RegExp _emailRegExp = RegExp(
     r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
@@ -37,6 +26,17 @@ class _CreatedAccountScreenState extends State<CreatedAccountScreen> {
     r'^010-?([0-9]{4})-?([0-9]{4})$',
   );
 
+  // 폼 키 추가
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  // 생년월일 컨트롤러 추가
+  final TextEditingController _birthdayController = TextEditingController();
+
+  // 상태 변수 추가
+  String _name = "";
+  String _contactInfo = "";
+  bool _isFromCustomize = false; // CustomizeYourScreen에서 돌아왔는지 확인하는 변수
+  bool _isBirthdayFocus = false;
+
   // FocusNode는 포커스 상태를 관리하는 데 사용되는 객체
   final FocusNode _nameFocusNode = FocusNode();
   final FocusNode _contactFocusNode = FocusNode();
@@ -45,6 +45,7 @@ class _CreatedAccountScreenState extends State<CreatedAccountScreen> {
   // 유효성 검사 상태 추가
   bool _isNameValid = false;
   bool _isContactValid = false;
+  bool _isBirthdayValid = false;
 
   @override
   void initState() {
@@ -99,11 +100,6 @@ class _CreatedAccountScreenState extends State<CreatedAccountScreen> {
     return null;
   }
 
-  void _setTextFieldDate(DateTime date) {
-    final textDate = date.toString().split(" ").first;
-    _birthdayController.value = TextEditingValue(text: textDate);
-  }
-
   // 이름 유효성 검사 함수
   void _validateName(String value) {
     setState(() {
@@ -113,23 +109,96 @@ class _CreatedAccountScreenState extends State<CreatedAccountScreen> {
     _formKey.currentState?.validate();
   }
 
-  void _onSubmit() {
+  // 제출 버튼 클릭 시 호출되는 함수 : customize_experience 화면으로 이동
+  Future<void> _onSubmit() async {
+    // 폼 검증
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+      // 폼 저장
       _formKey.currentState!.save();
-      Navigator.push(
+      //
+      final result = await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => CustomizeYourScreen(
+          builder: (context) => CustomizeExperienceScreen(
             previousScreen: widget,
           ),
         ),
-      ).then((_) {
-        // CustomizeYourScreen에서 돌아왔을 때 상태 업데이트
-        setState(() {
-          _isFromCustomize = true;
-        });
+      );
+      // 기존 코드 : 화면으로 이동시 동의 여부 상관없이 _isFromCustomize 변경
+      // .then((_) {
+      //   // CustomizeYourScreen에서 돌아왔을 때 상태 업데이트
+      //   setState(() {
+      //     // _isFromCustomize = true;
+      //   });
+      // });
+
+      // When a BuildContext is used from a StatefulWidget, the mounted property
+      // must be checked after an asynchronous gap.
+      if (!context.mounted) return;
+
+      // 화면 이동 후 상태 값을 전달 받아 업데이트
+      setState(() {
+        _isFromCustomize = result ?? false;
       });
     }
+  }
+
+  void _setTextFieldDate(DateTime date) {
+    final textDate = date.toString().split(" ").first;
+    _birthdayController.value = TextEditingValue(text: textDate);
+  }
+
+  // showCupertinoModalPopup
+  // iOS 스타일의 모달 팝업을 표시하는 Flutter의 내장 함수
+  // https://api.flutter.dev/flutter/cupertino/showCupertinoModalPopup.html
+  void _showDatePicker(BuildContext context) {
+    if (_isFromCustomize) {
+      return;
+    }
+
+    if (_birthdayController.text.isEmpty) {
+      _birthdayController.text = DateTime.now().toString().split(" ").first;
+    }
+
+    _isBirthdayFocus = true;
+    _isBirthdayValid = true;
+    setState(() {});
+
+    showCupertinoModalPopup(
+      context: context,
+      barrierColor: Colors.transparent,
+      builder: (context) => SizedBox(
+        height: 180,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Gaps.v5,
+            Divider(
+              color: Colors.grey.shade300,
+              thickness: Sizes.size1,
+              endIndent: Sizes.size5,
+            ),
+            Expanded(
+              child: CupertinoDatePicker(
+                maximumDate: DateTime.now(),
+                initialDateTime: _birthdayController.text.isEmpty
+                    ? DateTime.now()
+                    : DateTime.parse(_birthdayController.text),
+                mode: CupertinoDatePickerMode.date,
+                onDateTimeChanged: _setTextFieldDate,
+                backgroundColor: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ).then((_) {
+      // 모달 팝업이 닫힐 때 포커스 상태 업데이트
+      _birthdayFocusNode.unfocus();
+      setState(() {
+        _isBirthdayFocus = false;
+      });
+    });
   }
 
   // 연락처 유효성 검사 함수\
@@ -153,312 +222,175 @@ class _CreatedAccountScreenState extends State<CreatedAccountScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: Sizes.size40),
-            child: Column(
-              children: [
-                Gaps.v40,
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          "Cancel",
-                          style: TextStyle(
-                            fontSize: Sizes.size20,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Icon(
-                      FontAwesomeIcons.twitter,
-                      color: Color(0xFF4e98e9),
-                      size: Sizes.size40,
-                    ),
-                  ],
-                ),
-                Gaps.v40,
-                Text(
-                  "Create your account",
-                  style: TextStyle(
-                    fontSize: Sizes.size24,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                Gaps.v20,
-                Form(
-                  key: _formKey,
-                  child: Column(
+      appBar: const AppBarWidget(
+        leadingType: LeadingType.cancel,
+      ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: Sizes.size40),
+        child: Column(
+          children: [
+            Gaps.v20,
+            Text(
+              "Create your account",
+              style: TextStyle(
+                fontSize: Sizes.size24,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            Gaps.v20,
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Stack(
+                    alignment: Alignment.center,
                     children: [
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          if (_isNameValid) // 이름이 유효할 때만 체크 표시
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: Icon(
-                                FontAwesomeIcons.solidCircleCheck,
-                                size: Sizes.size32,
-                                color: Colors.green,
-                              ),
-                            ),
-                          TextFormField(
-                            focusNode: _nameFocusNode,
-                            keyboardType: TextInputType.name,
-                            autocorrect: false,
-                            decoration: InputDecoration(
-                              hintText: "Name",
-                            ),
-                            // 변화를 감지 할때 마다 검증 함수 호출
-                            onChanged: _validateName,
-                            onFieldSubmitted: _onFieldSubmitted,
-                            onTapOutside: (event) {
-                              FocusScope.of(context).unfocus();
-                              _onFieldSubmitted(_name);
-                            },
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Name cannot be empty";
-                              }
-                              return null;
-                            },
+                      if (_isNameValid) // 이름이 유효할 때만 체크 표시
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Icon(
+                            FontAwesomeIcons.solidCircleCheck,
+                            size: Sizes.size32,
+                            color: Colors.green,
                           ),
-                        ],
-                      ),
-                      Gaps.v20,
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          if (_isContactValid) // 연락처가 유효할 때만 체크 표시
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: Icon(
-                                FontAwesomeIcons.solidCircleCheck,
-                                size: Sizes.size32,
-                                color: Colors.green,
-                              ),
-                            ),
-                          TextFormField(
-                            focusNode: _contactFocusNode,
-                            keyboardType: TextInputType.emailAddress,
-                            autocorrect: false,
-                            decoration: InputDecoration(
-                              hintText: "Phone number or email address",
-                            ),
-                            onChanged: _validateContact, // 검증 함수 연결
-                            onFieldSubmitted: _onFieldSubmitted,
-                            onTapOutside: (event) {
-                              FocusScope.of(context).unfocus();
-                              _onFieldSubmitted(_contactInfo);
-                            },
-                            validator: _validateContactInfo,
-                          ),
-                        ],
-                      ),
-                      Gaps.v20,
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          if (_birthdayController.value.text.isNotEmpty)
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: Icon(
-                                FontAwesomeIcons.solidCircleCheck,
-                                size: Sizes.size32,
-                                color: Colors.green,
-                              ),
-                            ),
-                          TextFormField(
-                            controller: _birthdayController,
-                            focusNode: _birthdayFocusNode,
-                            decoration: InputDecoration(
-                              hintText: "Date of birth",
-                            ),
-                            readOnly: true,
-                          ),
-                        ],
-                      ),
-                      Gaps.v10,
-                      if (_birthdayController.value.text.isNotEmpty)
-                        Text(
-                          "This will not be shown publicly. Confirm your own age, even if this account is for a business, a pet, or something else.",
                         ),
+                      TextFormField(
+                        focusNode: _nameFocusNode,
+                        keyboardType: TextInputType.name,
+                        autocorrect: false,
+                        decoration: InputDecoration(
+                          hintText: "Name",
+                        ),
+                        // 변화를 감지 할때 마다 검증 함수 호출
+                        onChanged: _validateName,
+                        onFieldSubmitted: _onFieldSubmitted,
+                        onTapOutside: (event) {
+                          FocusScope.of(context).unfocus();
+                          _onFieldSubmitted(_name);
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Name cannot be empty";
+                          }
+                          return null;
+                        },
+                      ),
                     ],
                   ),
-                ),
-              ],
-            ),
-          ),
+                  Gaps.v20,
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      if (_isContactValid) // 연락처가 유효할 때만 체크 표시
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Icon(
+                            FontAwesomeIcons.solidCircleCheck,
+                            size: Sizes.size32,
+                            color: Colors.green,
+                          ),
+                        ),
+                      TextFormField(
+                        focusNode: _contactFocusNode,
+                        keyboardType: TextInputType.emailAddress,
+                        autocorrect: false,
+                        decoration: InputDecoration(
+                          hintText: "Phone number or email address",
+                        ),
+                        onChanged: _validateContact, // 검증 함수 연결
+                        onFieldSubmitted: _onFieldSubmitted,
+                        onTapOutside: (event) {
+                          FocusScope.of(context).unfocus();
+                          _onFieldSubmitted(_contactInfo);
+                        },
+                        validator: _validateContactInfo,
+                      ),
+                    ],
+                  ),
+                  Gaps.v20,
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      if (_birthdayController.value.text.isNotEmpty)
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Icon(
+                            FontAwesomeIcons.solidCircleCheck,
+                            size: Sizes.size32,
+                            color: Colors.green,
+                          ),
+                        ),
+                      TextFormField(
+                        controller: _birthdayController,
+                        onTap: () {
+                          _showDatePicker(context);
+                        },
+                        decoration: InputDecoration(
+                          hintText: "Date of birth",
+                        ),
+                        readOnly: true,
+                      ),
+                    ],
+                  ),
+                  Gaps.v10,
+                  if (_isBirthdayFocus)
+                    Text(
+                      "This will not be shown publicly. Confirm your own age, even if this account is for a business, a pet, or something else.",
+                    ),
+                ],
+              ),
+            )
+          ],
         ),
       ),
-      bottomNavigationBar: SizedBox(
-        // 생년월일 포커스 상태에 따라 높이 조정
+      bottomNavigationBar: AnimatedContainer(
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeInOut,
         height: _isFromCustomize
             ? 320
-            : _birthdayFocusNode.hasFocus
-                ? 320
+            : _isBirthdayFocus
+                ? 250
                 : 120,
         child: BottomAppBar(
           color: Colors.white,
           elevation: 1,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: Sizes.size10),
-            child: _isFromCustomize
-                ? Expanded(
-                    child: Column(
-                      children: [
-                        RichText(
-                          text: TextSpan(
-                            style: TextStyle(
-                              fontSize: Sizes.size14,
-                              color: Colors.black,
-                            ),
-                            children: [
-                              TextSpan(
-                                  text: "By signing up, you agree to the "),
-                              TextSpan(
-                                text: "Terms of Service",
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                ),
-                              ),
-                              TextSpan(text: " and "),
-                              TextSpan(
-                                text: "Privacy Policy",
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                ),
-                              ),
-                              TextSpan(text: ", including "),
-                              TextSpan(
-                                text: "Cookie Use",
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                ),
-                              ),
-                              TextSpan(
-                                text:
-                                    ". Twitter may use your contact information, including your email address and phone number for purposes outlined in our Privacy Policy, like keeping your account secure and personalizing our services, including ads. ",
-                              ),
-                              TextSpan(
-                                text: "Learn more",
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                ),
-                              ),
-                              TextSpan(
-                                text:
-                                    ". Others will be able to find you by email or phone number, when provided, unless you choose otherwise ",
-                              ),
-                              TextSpan(
-                                text: "here",
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                ),
-                              ),
-                              TextSpan(text: "."),
-                            ],
-                          ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _isFromCustomize
+                      ? SignUpButton(
+                          name: _name,
+                          contactInfo: _contactInfo,
+                          birthday: _birthdayController.text,
+                        )
+                      : NextButton(
+                          isNameValid: _isNameValid,
+                          isContactValid: _isContactValid,
+                          isBirthdayValid: _isBirthdayValid,
+                          onNext: _onSubmit,
                         ),
-                        Gaps.v20,
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            vertical: Sizes.size10,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.blue.shade400,
-                            borderRadius: BorderRadius.circular(Sizes.size32),
-                          ),
-                          child: Center(
-                            child: Text(
-                              "Sign up",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: Sizes.size24,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ), // 나중에 새로운 컬럼으로 교체할 빈 공간
-                  )
-                : Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              print(_isNameValid);
-                              print(_isContactValid);
-                              if (_isNameValid && _isContactValid) {
-                                _onSubmit();
-                              }
-                            },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                vertical: Sizes.size10,
-                                horizontal: Sizes.size32,
-                              ),
-                              decoration: BoxDecoration(
-                                // 이름과 메일이 전부 유효해야 엑티브 상태가 되야 한다.
-                                color: _isNameValid && _isContactValid
-                                    ? Colors.black
-                                    : Colors.grey.shade600,
-                                borderRadius:
-                                    BorderRadius.circular(Sizes.size32),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "Next",
-                                  style: TextStyle(
-                                    color: _isNameValid && _isContactValid
-                                        ? Colors.white
-                                        : Colors.grey.shade500,
-                                    fontSize: Sizes.size24,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      // 생년월일 포커스 상태에 따라 표시
-                      if (_birthdayFocusNode.hasFocus) ...[
-                        Gaps.v5,
-                        Expanded(
-                          child: Divider(
-                            color: Colors.grey.shade300,
-                            thickness: Sizes.size1,
-                            endIndent: Sizes.size5,
-                          ),
-                        ),
-                        Gaps.v20,
-                        SizedBox(
-                          height: 180,
-                          child: CupertinoDatePicker(
-                            maximumDate: initialDate,
-                            initialDateTime: initialDate,
-                            mode: CupertinoDatePickerMode.date,
-                            onDateTimeChanged: _setTextFieldDate,
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
     );
+  }
+}
+
+// TODO : Form 위젯 분리하기...
+class _CreateAccountForm extends StatefulWidget {
+  @override
+  State<_CreateAccountForm> createState() => _CreateAccountFormState();
+}
+
+class _CreateAccountFormState extends State<_CreateAccountForm> {
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox.shrink();
   }
 }

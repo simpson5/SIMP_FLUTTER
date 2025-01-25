@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:twitter_clone/authentication/sign_up_screen.dart';
+import 'package:twitter_clone/authentication/home_screen.dart';
 import 'package:twitter_clone/constants/sizes.dart';
 
 void main() {
@@ -27,7 +27,7 @@ class TwitterApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const SignUpScreen(),
+      home: const HomeScreen(),
     );
   }
 }

@@ -3,8 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:twitter_clone/authentication/created_account_screen.dart';
 import 'package:twitter_clone/constants/gaps.dart';
 import 'package:twitter_clone/constants/sizes.dart';
-import 'package:twitter_clone/widgets/app_bar.dart';
-import 'package:twitter_clone/widgets/move_button.dart';
+import 'package:twitter_clone/authentication/widgets/app_bar.dart';
+import 'package:twitter_clone/authentication/widgets/move_button.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:twitter_clone/authentication/home_screen.dart';
+// import 'package:twitter_clone/authentication/home_screen.dart';
+import 'package:twitter_clone/main_navigation/main_navigation_screen.dart';
 import 'package:twitter_clone/constants/sizes.dart';
 
 void main() {
@@ -27,7 +28,8 @@ class TwitterApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const HomeScreen(),
+      // home: const HomeScreen(),
+      home: const MainNavigationScreen(),
     );
   }
 }

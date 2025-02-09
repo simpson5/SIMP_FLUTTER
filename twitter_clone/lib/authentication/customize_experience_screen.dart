@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:twitter_clone/authentication/created_account_screen.dart';
 import 'package:twitter_clone/constants/gaps.dart';
 import 'package:twitter_clone/constants/sizes.dart';
-import 'package:twitter_clone/widgets/app_bar.dart';
+import 'package:twitter_clone/authentication/widgets/app_bar.dart';
 
 class CustomizeExperienceScreen extends StatefulWidget {
   final CreatedAccountScreen previousScreen; // 이전 화면 참조 추가

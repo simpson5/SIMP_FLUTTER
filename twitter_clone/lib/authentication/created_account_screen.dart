@@ -4,9 +4,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:twitter_clone/authentication/customize_experience_screen.dart';
 import 'package:twitter_clone/constants/gaps.dart';
 import 'package:twitter_clone/constants/sizes.dart';
-import 'package:twitter_clone/widgets/app_bar.dart';
-import 'package:twitter_clone/widgets/next_button.dart';
-import 'package:twitter_clone/widgets/sign_up_button.dart';
+import 'package:twitter_clone/authentication/widgets/app_bar.dart';
+import 'package:twitter_clone/authentication/widgets/next_button.dart';
+import 'package:twitter_clone/authentication/widgets/sign_up_button.dart';
 
 class CreatedAccountScreen extends StatefulWidget {
   const CreatedAccountScreen({super.key});

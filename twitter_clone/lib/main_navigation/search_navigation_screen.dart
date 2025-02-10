@@ -11,6 +11,9 @@ class SearchNavigationScreen extends StatefulWidget {
 }
 
 class _SearchNavigationScreenState extends State<SearchNavigationScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchKeyword = "";
+
   final List<Map<String, dynamic>> _users = [
     {
       "username": "rjmithun",
@@ -49,6 +52,22 @@ class _SearchNavigationScreenState extends State<SearchNavigationScreen> {
     },
   ];
 
+  List<Map<String, dynamic>> get _filteredUsers {
+    if (_searchKeyword.isEmpty) return _users;
+    return _users.where((user) {
+      final username = user["username"].toString().toLowerCase();
+      final name = user["name"].toString().toLowerCase();
+      final keyword = _searchKeyword.toLowerCase();
+      return username.contains(keyword) || name.contains(keyword);
+    }).toList();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,20 +89,26 @@ class _SearchNavigationScreenState extends State<SearchNavigationScreen> {
         scrolledUnderElevation: 0,
       ),
       body: ListView.builder(
-        itemCount: _users.length + 1,
+        itemCount: _filteredUsers.length + 1,
         itemBuilder: (context, index) {
           if (index == 0) {
             return Padding(
               padding: const EdgeInsets.all(Sizes.size16),
               child: CupertinoSearchTextField(
+                controller: _searchController,
                 placeholder: "Search",
                 style: const TextStyle(
                   color: Colors.black,
                 ),
+                onChanged: (value) {
+                  setState(() {
+                    _searchKeyword = value;
+                  });
+                },
               ),
             );
           }
-          final user = _users[index - 1];
+          final user = _filteredUsers[index - 1];
           return ListTile(
             contentPadding: const EdgeInsets.only(
               left: Sizes.size16,

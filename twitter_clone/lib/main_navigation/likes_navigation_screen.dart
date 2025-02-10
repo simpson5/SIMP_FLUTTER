@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:twitter_clone/constants/gaps.dart';
 import 'package:twitter_clone/constants/sizes.dart';
 import 'package:twitter_clone/data/activity_list.dart';
 import 'package:twitter_clone/model/activity.dart';
@@ -166,92 +167,107 @@ class ActivityWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Stack(
-        children: [
-          CircleAvatar(
-            radius: 20,
-            foregroundImage: NetworkImage(
-              activity.user.profileImageUrl,
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            right: 0,
-            child: Container(
-              width: 20,
-              height: 20,
-              decoration: BoxDecoration(
-                color: activity.iconColor,
-                border: Border.all(
-                  color: Colors.white,
-                  width: 3,
-                ),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Center(
-                child: Icon(
-                  activity.icon,
-                  size: 11,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-        ],
+      contentPadding: const EdgeInsets.only(
+        left: Sizes.size16,
+        right: Sizes.size16,
+        top: Sizes.size12,
+        bottom: Sizes.size12,
       ),
-      title: RichText(
-        text: TextSpan(
+      leading: Padding(
+        padding: const EdgeInsets.only(left: Sizes.size4),
+        child: Stack(
           children: [
-            TextSpan(
-              text: activity.user.username,
-              style: TextStyle(
-                color: Colors.grey.shade900,
-                fontWeight: FontWeight.w600,
+            CircleAvatar(
+              radius: Sizes.size20,
+              foregroundImage: NetworkImage(
+                activity.user.profileImageUrl,
               ),
             ),
-            TextSpan(
-              text: " ${activity.activityText}",
-              style: const TextStyle(
-                color: Colors.grey,
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: Container(
+                width: 20,
+                height: 20,
+                decoration: BoxDecoration(
+                  color: activity.iconColor,
+                  border: Border.all(
+                    color: Colors.white,
+                    width: 3,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(
+                  child: Icon(
+                    activity.icon,
+                    size: 11,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
           ],
         ),
       ),
-      subtitle: activity.content != null ? Text(activity.content!) : null,
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
+      title: Row(
         children: [
           Text(
-            "${DateTime.now().difference(activity.createdAt).inHours}h",
-            style: TextStyle(
-              color: Colors.grey.shade500,
-              fontSize: Sizes.size14,
+            activity.user.username,
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
             ),
           ),
-          if (activity.type == ActivityType.follow) ...[
-            const SizedBox(width: Sizes.size12),
-            Container(
+          Gaps.h4,
+          Text(
+            "· ${DateTime.now().difference(activity.createdAt).inHours}h",
+            style: TextStyle(
+              color: Colors.grey.shade500,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ],
+      ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (activity.content != null)
+            Text(
+              activity.content!,
+              style: TextStyle(
+                color: Colors.grey.shade500,
+              ),
+            ),
+          Text(
+            activity.activityText,
+            style: const TextStyle(
+              color: Colors.black,
+            ),
+          ),
+        ],
+      ),
+      trailing: activity.type == ActivityType.follow
+          ? Container(
               padding: const EdgeInsets.symmetric(
+                horizontal: Sizes.size24,
                 vertical: Sizes.size8,
-                horizontal: Sizes.size16,
               ),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(Sizes.size7),
+                color: Colors.white,
                 border: Border.all(
                   color: Colors.grey.shade400,
                 ),
+                borderRadius: BorderRadius.circular(Sizes.size10),
               ),
               child: Text(
                 activity.isFollowing ?? false ? "Following" : "Follow",
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
+                  fontSize: Sizes.size16,
+                  color: Colors.black,
                 ),
               ),
-            ),
-          ],
-        ],
-      ),
+            )
+          : null,
     );
   }
 }

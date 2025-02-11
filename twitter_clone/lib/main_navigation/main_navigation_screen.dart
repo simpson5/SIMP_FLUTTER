@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:twitter_clone/main_navigation/home_navigation_screen.dart';
 import 'package:twitter_clone/main_navigation/likes_navigation_screen.dart';
+import 'package:twitter_clone/main_navigation/profile_navigation_screen.dart';
 import 'package:twitter_clone/main_navigation/search_navigation_screen.dart';
 import 'package:twitter_clone/main_navigation/widgets/write_bottom_sheet.dart';
-
-import '../constants/sizes.dart';
-import 'in_development_screen.dart';
 import 'widgets/nav_tab.dart';
 
 class MainNavigationScreen extends StatefulWidget {
@@ -17,7 +15,7 @@ class MainNavigationScreen extends StatefulWidget {
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  int _selectedIndex = 3;
+  int _selectedIndex = 4;
 
   void _onTap(int index) {
     setState(() {
@@ -57,7 +55,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           ),
           Offstage(
             offstage: _selectedIndex != 4,
-            child: const InDevelopmentScreen(content: "Profile"),
+            child: const ProfileNavigationScreen(),
           )
         ],
       ),

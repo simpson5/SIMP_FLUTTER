@@ -30,18 +30,6 @@ class _LikesNavigationScreenState extends State<LikesNavigationScreen>
     _tabController.addListener(() {
       setState(() {});
     });
-    // 데이터 출력
-    for (var activity in activityList) {
-      print("=== Activity ===");
-      print("ID: ${activity.id}");
-      print("User: ${activity.user.username}");
-      print("Type: ${activity.type}");
-      print("Content: ${activity.content}");
-      print("Created At: ${activity.createdAt}");
-      print("Is Following: ${activity.isFollowing}");
-      print("Related Tweet: ${activity.relatedTwit?.content}");
-      print("---------------");
-    }
   }
 
   @override

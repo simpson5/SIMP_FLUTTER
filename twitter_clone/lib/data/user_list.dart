@@ -15,7 +15,7 @@ List<User> userList = [
   ),
   User(
     id: "3",
-    name: "NBA",
+    name: "NBA Official",
     username: "NBA",
     profileImageUrl: "https://picsum.photos/seed/nba/200",
   ),
@@ -33,14 +33,32 @@ List<User> userList = [
   ),
   User(
     id: "6",
-    name: "Barack Obama",
-    username: "BarackObama",
-    profileImageUrl: "https://picsum.photos/seed/obama/200",
+    name: "Vogue Magazine",
+    username: "voguemagazine",
+    profileImageUrl: "https://picsum.photos/seed/vogue/200",
   ),
   User(
     id: "7",
     name: "National Geographic",
     username: "NatGeo",
     profileImageUrl: "https://picsum.photos/seed/natgeo/200",
+  ),
+  User(
+    id: "8",
+    name: "Google Research",
+    username: "googleresearch",
+    profileImageUrl: "https://picsum.photos/seed/google/200",
+  ),
+  User(
+    id: "9",
+    name: "Gordon Ramsay",
+    username: "gordonramsay",
+    profileImageUrl: "https://picsum.photos/seed/gordon/200",
+  ),
+  User(
+    id: "10",
+    name: "Alex Fitness",
+    username: "alexfitness",
+    profileImageUrl: "https://picsum.photos/seed/fitness/200",
   ),
 ];

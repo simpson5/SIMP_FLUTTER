@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:twitter_clone/constants/sizes.dart';
 import 'package:twitter_clone/main_navigation/privacy_screen.dart';
 
@@ -89,7 +90,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 fontSize: Sizes.size16,
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              showCupertinoDialog(
+                context: context,
+                builder: (context) => CupertinoAlertDialog(
+                  title: const Text('Log out'),
+                  content: const Text('Are you sure you want to log out?'),
+                  actions: [
+                    CupertinoDialogAction(
+                      child: const Text('Cancel'),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    CupertinoDialogAction(
+                      isDestructiveAction: true,
+                      child: const Text('Log out'),
+                      onPressed: () {
+                        // TODO: 실제 로그아웃 로직 구현
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ],
       ),

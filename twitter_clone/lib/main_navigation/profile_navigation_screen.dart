@@ -19,13 +19,30 @@ class ProfileNavigationScreen extends StatefulWidget {
 class _ProfileNavigationScreenState extends State<ProfileNavigationScreen> {
   @override
   Widget build(BuildContext context) {
+    // DefaultTabController: 탭 뷰를 관리하는 컨트롤러
+    // length: 탭 수
+    // child: 탭 뷰를 포함하는 위젯
+    // tabBar 가 있으면 무조건 있어야 함
     return DefaultTabController(
       length: 2,
       child: SafeArea(
         child: Scaffold(
+          /* 
+            NestedScrollView: 내부에 여러 스크롤 가능한 위젯들을 포함할 수 있는 스크롤 뷰
+            - headerSliverBuilder: 상단에 고정되거나 스크롤되는 헤더 위젯들을 빌드
+            - body: 메인 스크롤 컨텐츠를 포함
+            주로 CollapsingToolbar 패턴이나 복잡한 스크롤 동작이 필요할 때 사용
+           */
           body: NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [
+                /* 
+                  SliverAppBar: 스크롤에 반응하는 앱바
+                  - floating: 스크롤 업하면 바로 나타날지 여부
+                  - pinned: 스크롤해도 상단에 고정될지 여부
+                  - expandedHeight: 최대로 확장됐을 때의 높이
+                  - flexibleSpace: 확장/축소될 때 보여질 위젯
+                 */
                 SliverAppBar(
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -63,17 +80,33 @@ class _ProfileNavigationScreenState extends State<ProfileNavigationScreen> {
                     ],
                   ),
                 ),
+
+                /* 
+                  SliverPersistentHeader: 스크롤 시 크기가 변하거나 고정되는 헤더
+                  - pinned: true면 스크롤해도 상단에 고정
+                  - floating: true면 스크롤 업할 때 바로 나타남
+                  - delegate: 헤더의 빌드 로직과 크기 정보를 포함하는 delegate 클래스
+                  
+                  maxExtent: 최대 높이
+                  minExtent: 최소 높이
+                  shouldRebuild: 헤더를 다시 빌드해야 하는지 결정
+                 */
                 SliverPersistentHeader(
                   pinned: true,
                   delegate: CustomSliverPersistentHeader(),
                 ),
-                // SliverPersistentHeader는 여러개도 가능하다.
                 SliverPersistentHeader(
                   pinned: true,
                   delegate: TabBarDelegate(),
                 ),
               ];
             },
+            /* 
+              TabBarView: 탭별로 다른 화면을 보여주는 스와이프 가능한 뷰
+              - TabController와 연동되어 탭 전환을 처리
+              - children: 각 탭에 해당하는 위젯 리스트
+              - physics: 스크롤/스와이프 동작 설정
+             */
             body: TabBarView(
               children: [
                 ListView.builder(
@@ -298,6 +331,15 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
       color: Colors.white,
+      /* 
+        TabBar: 탭 선택을 위한 네비게이션 바
+        - tabs: 각 탭의 위젯 리스트
+        - indicatorSize: 탭 인디케이터의 크기 (label or tab)
+        - indicatorColor: 선택된 탭을 표시하는 인디케이터의 색상
+        - labelColor: 선택된 탭의 텍스트 색상
+        - unselectedLabelColor: 선택되지 않은 탭의 텍스트 색상
+        - isScrollable: 탭이 많을 때 스크롤 가능하게 할지 여부
+       */
       child: TabBar(
         indicatorSize: TabBarIndicatorSize.tab,
         indicatorColor: Colors.black,

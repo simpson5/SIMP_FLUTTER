@@ -46,6 +46,17 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
       ),
       body: ListView(
         children: [
+          /* 
+            SwitchListTile: 스위치를 포함한 리스트 타일 위젯
+            - value: 스위치의 현재 상태 (on/off)
+            - onChanged: 스위치 상태가 변경될 때 호출되는 콜백
+            - activeColor: 스위치가 켜졌을 때의 색상
+            - title: 타일의 주요 텍스트
+            - secondary: 타일의 leading 위젯 (보통 아이콘)
+            - subtitle: 타일의 부가 설명 텍스트 (선택)
+            
+            .adaptive()를 사용하면 iOS/Android 플랫폼에 맞는 스위치 스타일 적용
+           */
           SwitchListTile.adaptive(
             value: _isPrivateProfile,
             onChanged: (value) {
